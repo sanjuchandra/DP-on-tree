@@ -1,0 +1,54 @@
+#define ll long long int
+class Solution {
+public:
+	unordered_map<TreeNode* , pair<ll , ll>> sum; //khud ki value left ki value right ki value
+	ll ans;
+	ll mod;
+	ll fill_the_sum(TreeNode *root) {
+		if (root == NULL) {
+			return 0;
+		}
+		ll left = 0 , right = 0;
+		left = fill_the_sum(root->left);
+		right = fill_the_sum(root->right);
+		sum.insert(make_pair(root , make_pair(left , right)));
+		//cout<<root->val<<" -->"<<left<<" "<<right<<endl;
+		return root->val + left + right;
+	}
+
+	void solve(TreeNode *root , TreeNode *par , ll upper_sum = 0) {
+		if (root == NULL) {
+			return;
+		}
+		//chose left to break
+		solve(root->left , root , upper_sum + root->val + sum[root].second);
+		solve(root->right , root , upper_sum + root->val + sum[root].first);
+		if (par != NULL) {
+			ll x = (upper_sum) * (root->val +
+			                      sum[root].first + sum[root].second);
+			//cout << x << " " << ans << endl;
+			ans = max(ans , x);
+		}
+		if (par != NULL) {
+			ll x = (upper_sum) * (root->val +
+			                      sum[root].first + sum[root].second);
+			//cout << x << " " << ans << endl;
+			ans = max(ans , x);
+		}
+		return;
+	}
+
+	int maxProduct(TreeNode* root) {
+		ll left = 0 , right = 0;
+		left = fill_the_sum(root->left);
+		right = fill_the_sum(root->right);
+		//cout<<root->val<<" -->"<<left<<" "<<right<<endl;
+		sum.insert(make_pair(root , make_pair(left , right)));
+		ans = 0;
+		mod = 1000000007;
+		TreeNode *x = root;
+		solve(root , NULL);
+        //cout<<744535599%mod<<endl;
+		return ans%mod;
+	}
+};
